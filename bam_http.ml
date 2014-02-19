@@ -56,6 +56,10 @@ module Server = struct
     let add_handler ?methods t ~path ~handler = 
         HandlerMap.add t ?methods path handler
 
+    let serve_file t ~path ~filename = 
+            HandlerMap.add t ~methods:[`GET] path (fun _ _ ->
+                    Cohttp_async.Server.respond_with_file filename)
+
     let run_on_port t ~port =
         let handler ~body:_ _sock req =
             let uri = Cohttp.Request.uri req in
